@@ -1,0 +1,560 @@
+﻿\documentclass[12pt]{jsarticle}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  パッケージ                                               %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{framed}%文章を箱で囲う
+\usepackage{color}%色をつける
+\usepackage{amsmath,amssymb}%数式全般
+\usepackage{amsthm}%定理環境
+%\usepackage[all]{xy}%可換図式
+\usepackage[dvipdfmx]{graphicx}%図の挿入(\mapdisplayに必要)
+\usepackage{mathrsfs}%花文字
+\usepackage{comment}%コメント環境
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  よく使う黒板太字                                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  よく使う太字                                             %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\Top}{\textbf{Top}}
+\newcommand{\Vect}{\textbf{Vect}_{\C}}
+\newcommand{\TopVect}{\textbf{TopVect}_{\C}}
+\newcommand{\LCTopVect}{\textbf{LCTopVect}_{\C}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  よく使うカリグラフィー体                                  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\B}{\mathcal{B}}
+\newcommand{\F}{\mathcal{F}}%フィルター
+\newcommand{\CX}{\mathcal{C}(X)}%連続関数の空間C(X)
+\newcommand{\CCX}{\mathcal{C}_c(X)}%コンパクト台連続関数の空間Cc(X)
+\newcommand{\CXK}{\mathcal{C}(X,K)}%台がKに含まれる連続関数
+\newcommand{\KX}{\mathcal{K}(X)}%Xのコンパクト部分集合の全体
+\newcommand{\limCXK}{\varinjlim \CXK}%余極限
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  よく使う記号の略記                                        %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\setmid}[2]{\left\{ #1 \mathrel{} \middle| \mathrel{} #2 \right\}}%縦線つき集合記法
+\newcommand{\mapdisplay}[5]{\begin{array}{r@{\,\,}c@{\,\,}c@{\,\,}c}#1\colon&#2&\longrightarrow&#3\\ &\rotatebox{90}{$\in$}&&\rotatebox{90}{$\in$}\\ &#4&\longmapsto&#5 \end{array}}%diplay形式写像
+\newcommand{\I}{\sqrt{-1}}%虚数単位。\iは既にある。
+\newcommand{\single}{\{ 0 \}}%0のシングルトン
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}%絶対値
+\newcommand{\norm}[1]{\left \lVert #1 \right \rVert}%ノルム
+%\newcommand{\transpose}[1]{\, {\vphantom{#1}}^t\!{#1}}%行列の転置
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  log型演算子 　　　                                       %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\Image}{Image}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\Int}{Int}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  番号付き定理環境　                                       %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%定理環境の整備(sectionにカウンタが従属、definitionとカウンタを共有)
+\theoremstyle{definition}%定理環境のアルファベットを斜体にしない
+\newtheorem{definition}{定義}[section]%定理番号をsectionに従属させる
+\newtheorem{theorem}[definition]{定理}
+\newtheorem{proposition}[definition]{命題}
+\newtheorem{lemma}[definition]{補題}
+\newtheorem{example}[definition]{例}
+\newtheorem{remark}[definition]{注意}
+\newtheorem{note}[definition]{注記}
+\newtheorem{corollary}[definition]{系}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  番号なし定理環境　                                       %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%番号なし定理環境
+\newtheorem*{definition*}{定義}
+\newtheorem*{theorem*}{定理}
+\newtheorem*{proposition*}{命題}
+\newtheorem*{lemma*}{補題}
+\newtheorem*{example*}{例}
+\newtheorem*{remark*}{注意}
+\newtheorem*{note*}{注記}
+\newtheorem*{corollary*}{系}
+\newtheorem*{quo}{引用}%quote,quotationはすでにある
+\renewcommand{\proofname}{\textgt{証明}}%proof環境の修正
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  装飾左線　 　　　　                                       %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%leftbarの定義
+\makeatletter
+\renewenvironment{leftbar}{%
+%  \def\FrameCommand{\vrule width 3pt \hspace{10pt}}%  デフォルトの線の太さは3pt
+  \renewcommand\FrameCommand{\vrule width 1pt \hspace{10pt}}%
+  \MakeFramed {\advance\hsize-\width \FrameRestore}}
+ {\endMakeFramed}
+ %左線つき引用の略記
+ \newcommand{\barquo}[1]{\begin{leftbar} \begin{quo}  #1 \end{quo} \end{leftbar}}
+ %左線つき定義環境
+ \newenvironment{bardefinition}{ \begin{definition} \begin{leftbar}} {\end{leftbar} \end{definition}}
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %%  section　 　　　　                                       %%
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %太字番号なしサブセクションの略記
+ \newcommand{\bfsubsection}[1]{\subsection*{\textbf{#1}}}
+
+
+\begin{document}
+
+
+
+
+\title{コンパクト台連続関数}
+\author{@seasawher}
+\maketitle
+
+\bfsubsection{はじめに}
+小林・大島\cite{小林大島} \S 3.2 に次のような記述がある。
+\barquo{
+局所コンパクト位相空間$X$上の複素数値の連続関数全体のなすベクトル空間を$\CX$, その中でコンパクト台をもつ関数のなすベクトル空間を$\CCX$, $X$上の非負実数値コンパクト台連続関数全体を$\mathcal{C}^+_c(X)$と書く. $\cdots$(中略)$\cdots$ $\CCX$の広義一様収束の位相に関して$\widetilde{I}$は連続であること, すなわち\\
+「関数列$F_n \in \CCX$が$F \in \CCX$に一様収束し, しかも$\supp F_n$が$n$に依存しないコンパクト集合に含まれているならば、$\lim\limits_{n \to \infty} \widetilde{I}(F_n)= \widetilde{I}(F)$が成り立つ」\\
+ことが容易にわかる.
+}
+ここで次のような疑問が湧く。つまり、$\textbf{$\CCX$の位相としてどのようなものを考えているのか}$という疑問である。この疑問について考えるのが今回の目的である。
+\begin{comment}
+ 上記の文章を省略した箇所も含めてよく読むと、その位相は次の性質を満たしているらしいことがわかる。
+ \begin{description}%太字見出しつき箇条書き
+   \item[性質1]$\CCX$での点列の収束$F_n \to F$が、$F_n$が$F$に一様収束してかつ$\supp F_n \subset K$なるコンパクト集合$K \subset X$が存在することと同値であるらしい。
+   \item[性質2]任意の$X$上のRadon測度$\mu$に対して積分作用素$I \colon \CCX \to \C \; \text{via} \; I(f)=\int_X \cdot \, d\mu$は連続になるらしい。
+ \end{description}
+\end{comment}
+
+
+
+\section{位相ベクトル空間}
+\subsection*{フィルター}
+
+\begin{bardefinition}
+  位相空間と連続写像のなす圏を$\Top$で表す。
+\end{bardefinition}
+
+\begin{bardefinition}
+集合$X$の部分集合の集まり$\F$が$X$上のフィルターであるとは、次を満たすことである。
+\begin{description}%太字見出し箇条書き
+\item[\textbf{F1}]$\F$は空集合を含まない
+\item[\textbf{F2}]$X \in \F$であり、また$A,B \in \F$ならば$A \cap B \in \F$
+\item[\textbf{F3}]$A \in \F$ならば、すべての$A \subset B$について$B \in \F$である。
+\end{description}
+\end{bardefinition}
+
+
+\begin{theorem}
+  $X \in \Top$とする。$x \in X$の近傍全体がなす$X$上のフィルター$\F(x)$は次の性質を満たす。
+  \begin{description}
+    \item[\textbf{N1}] 任意の$A \in \F(x)$に対して$x \in A$
+    \item[\textbf{N2}] 任意の$A \in \F(x)$に対してある$B \in \F(x)$が存在して次が成立する。
+    \[
+    \forall y \in B \; A \in \F(y)
+    \]
+  \end{description}
+  逆に、集合$X$があり、各点$x \in X$に対して上記を満たす$X$上のフィルター$\F_x$が与えられているとき、$\F_x$を$x$の近傍全体とするような$X$の位相$\tau$が一意的に存在する。
+\end{theorem}
+\begin{proof}
+  以下の証明はMaria-I\cite{Maria-I}Theorem 1.1.9 に依る。
+
+  $X \in \Top$としたとき$\F(x)$が$\text{N1}$と$\text{N2}$を満たすことはあきらかであるので、逆を示す。フィルター$\F_x$が上記の条件を満たしているとき、位相$\tau$を
+  \[
+  \tau = \setmid{O \subset X}{x \in O \text{ならば} O \in \F_x }
+  \]
+  により定義する。これが実際に位相になっていることを確かめる。
+  \begin{itemize}
+    \item $\emptyset \in \tau$はあきらか。フィルターは上に閉じている($\textbf{F3}$)ので、$X \in \tau$も従う。
+    \item $\textbf{F2}$により、$A,B \in \tau$ならば$A \cap B \in \tau$が判る。
+    \item $U_i \in \tau$、$U = \bigcup U_i$とする。$x \in U$とするとある$i$が存在して$x \in U_i$かつ$U_i \in \F_x$である。よって$\textbf{F3}$により$U \in \tau$が成り立つ。
+  \end{itemize}
+次に示さなくてはいけないのは、$x \in X$の$\tau$における近傍全体が実際に$\F_x$に一致していることである。
+\begin{itemize}
+\item $U$を$x$の近傍とする。このときある$O \in \tau$が存在して$x \in O \subset U$が成り立つ。よって$\tau$の定義により、$O \in \F_x$である。したがって$\textbf{F3}$により$U \in \F_x$が成り立つ。
+\item $U \in \F_x$とし、$W = \setmid{y \in U}{U \in \F_y} \subset U$とおく。$\textbf{N1}$により$x \in U$なので、$x \in W$である。さらに、もし$y \in W$ならば$\textbf{N2}$によりある$V \in \F_y$が存在して$\forall z \in V \; U \in \F_z$である。
+これは$z \in W$であり、$V \subset W$であることを意味する。よって$\textbf{F3}$により$W \in \F_y$である。以上により$y \in W$ならば$W \in \F_y $が示せたので、$W \in \tau$と結論できる。ゆえに$U$は$x$の近傍である。
+\end{itemize}
+位相の一意性はあきらか。
+\end{proof}
+
+
+
+\subsection*{フィルターと位相ベクトル空間}
+\begin{bardefinition}
+$\C$ベクトル空間と線形写像のなす圏を$\Vect$で表すことにする。
+\end{bardefinition}
+
+
+\begin{bardefinition}
+  $V \in \Vect$が位相$\tau$に関して位相$\C$ベクトル空間であるとは、スカラー倍$\C \times V \to V$と和$V \times V \to V$とが連続であることである。ここでは、\textbf{Hausdorff性は仮定しない}ことにする。
+
+  位相$\C$ベクトル空間と連続線形写像からなる圏を$\TopVect$で表す。
+\end{bardefinition}
+
+
+\begin{bardefinition}
+  $X \in \Vect$の部分集合$U \subset X$について次のように定義する。
+  \begin{enumerate}
+    \item $U$が吸収的(absorbing)であるとは、$\forall x \in X$, $\exists \rho > 0 \; \text{s.t.} \; \forall \lambda \in \C$ $\abs{\lambda} \leq \rho$ならば$\lambda x \in U$が成り立つことである。
+    \item $U$が均衡(balanced)であるとは、$\forall x \in U, \, \forall \lambda \in \C \; \abs{\lambda} \leq 1 \text{ならば} \lambda x \in U$が成り立つことである。
+    \item $U$が凸(convex)であるとは、任意の$x,y \in U$と実数$0 \leq \lambda \leq 1$とに対して$\lambda x + (1 - \lambda)y \in U$が成り立つことである。
+    \item $U$が絶対凸(absolutely convex)であるとは、凸かつ均衡であることである。
+  \end{enumerate}
+\end{bardefinition}
+
+
+
+\begin{theorem}
+$X \in \TopVect$とし、$\F$を$X$における$0$の近傍の全体とする。このとき$\F$は$X$上のフィルターであり、次を満たす。
+\begin{enumerate}
+  \item 任意の$U \in \F$について$0 \in U$
+  \item $\forall U \in \F$, $\exists V \in \F \; \text{s.t.} \; V + V \subset U$
+  \item $\forall U \in \F$, $\forall \lambda \in \C \setminus \single \quad \lambda U \in \F$
+  \item $\forall U \in \F$, $U$ は吸収的
+  \item $\forall U \in \F$, $\exists V \in \F$ $\;$ $V$は均衡でかつ$V \subset U$
+\end{enumerate}
+逆に、$X \in \Vect$上のフィルター$\F$が上記をみたすとき、$X$は$\F$を原点の近傍全体とするような位相によって位相ベクトル空間となる。
+\end{theorem}
+\begin{proof}
+  以下の証明はMaria-I\cite{Maria-I}Theorem 2.1.10に依る。
+
+  $X \in \TopVect$とする。このとき
+\begin{enumerate}
+  \item あきらか。
+  \item 和$X \times X \to X$は連続であるので、この写像による$U$の逆像は開集合である。よって積位相の定義により、これが成り立つ。
+  \item $0$でないスカラーによるスカラー倍は同相写像であることから。
+  \item $U$が吸収的でないと仮定する。このときある$y \in X$が存在して任意の$n \in \N$について$\frac{1}{n}y \not\in U$である。しかしこれはスカラー倍の連続性に矛盾する。
+  \item スカラー倍$\C \times X \to X$による$U$の逆像は、$(0,0) \in \C \times X$の近傍である。積位相の定義により、ある$0 \in \C$の近傍$N$と$W \in \F$が存在して、$NW \subset U$を満たす。ここで$\rho > 0$を$B_{\rho}(0) = \setmid{\alpha \in \C}{\abs{\alpha} \leq \rho} \subset N$となる実数とする。さらに
+  \[
+  V = \bigcup_{\abs{\alpha} \leq \rho} \alpha W \subset U
+  \]
+とする。このとき、$V \in \F$でありかつ$V$は均衡である。
+\end{enumerate}
+
+逆を示そう。$X \in \Vect$とする。$X$上のフィルター$\F$は仮定を満たしているとする。$x \in X$に対して$\F(x) = \setmid{U + x}{U \in \F}$とする。
+先の定理の仮定$\textbf{N1}$、$\textbf{N2}$を確認するところから始める。
+\begin{itemize}
+  \item $A \in \F(x)$とする。$A = U + x$なる$U \in \F$があり、1より$0 \in U$なので$x \in A$
+  \item $A \in \F(x)$とする。このとき$A = U + x$なる$U \in \F$がある。このとき2より$V + V \subset U$なる$V \in \F$がある。そこで$B = V + x \in \F(x)$と定義する。$y \in B$とすると、
+  \[
+  V + y \subset V + B \subset V + V + x \subset U + x = A
+  \]
+  が成り立つ。$V + y \in \F(y)$により、$A \in \F(y)$がいえた。
+\end{itemize}
+したがって、$x \in X$の近傍全体が$\F(x)$と一致するような$X$の位相$\tau$が一意的に存在する。次に、加法とスカラー倍が連続であることを示そう。加法$X \times X \to X$の連続性は2よりただちに従うので、問題はスカラー倍である。
+\begin{itemize}
+  \item スカラー倍の連続性を示すために、$(\lambda_0,x_0) \in \C \times X$とし、$U'$を$\lambda_0 x_0$の近傍であるとする。このとき$U' = U + \lambda_0 x_0$なる$U \in \F$がある。ここで2と5より、ある均衡な$W \in \F$があって$W + W + W \subset U$を満たす。4により、$W$は吸収的でもあるので、ある$\rho > 0$が存在して
+  \[
+  \forall \lambda \in \C \; \abs{\lambda} \leq \rho \to \lambda x_0 \in W
+  \]
+  が成り立つ。$\rho$を十分小さく取り直すことにより、$\rho \leq 1$としてよい。
+ \item いま$\lambda_0 = 0$とすると$\lambda_0 x_0=0$であり、$U'=U$である。このとき
+ \[
+ \Image (B_{\rho}(0) \times (W + x_0)) = \setmid{\lambda y + \lambda x_0}{\lambda \in B_{\rho}(0), y \in W}
+ \]
+ を考えると、これは$W + W$の部分集合であり、したがって$U$に含まれる。よって$U$の逆像は$(0.x_0)$の近傍$B_{\rho}(0) \times (W + x_0)$を含む。
+ \item $\lambda_0 \neq 0$としよう。$\sigma = \min \{ \rho,\abs{\lambda_0}\}$とする。このとき
+ \begin{align*}
+ &\Image((B_{\rho}(0)+ \lambda_0) \times (\abs{\lambda_0}^{-1}W + x_0)) \\
+ &= \setmid{\lambda \abs{\lambda_0}^{-1} y + \lambda x_0 + \lambda_0 \abs{\lambda_0}^{-1} y + \lambda_0 x_0 }{\lambda \in B_{\sigma}(0), y \in W}
+\end{align*}
+を考える。$W$は吸収的なので、$\lambda x_0 \in W$である。また$\lambda \abs{\lambda_0}^{-1}$も$\lambda_0 \abs{\lambda_0}^{-1}$も絶対値が1以下であるということから、$W$は均衡なので$\lambda \abs{\lambda_0}^{-1}W \subset W$かつ$\lambda_0 \abs{\lambda_0}^{-1}W \subset W$である。
+したがって
+\begin{align*}
+\Image((B_{\rho}(0)+ \lambda_0) \times (\abs{\lambda_0}^{-1}W + x_0))
+&\subset W + W + W + \lambda_0 x_0 \\
+&\subset U +  \lambda_0 x_0
+\end{align*}
+である。(3より、$\abs{\lambda_0}^{-1}W$は0の近傍であることに注意)
+\end{itemize}
+以上により示したいことがいえた。
+\end{proof}
+
+
+\newpage
+\section{局所凸位相ベクトル空間}
+局所凸位相ベクトル空間の圏が余完備であることを示す。このとき、Hausdorff性を仮定しなかったことが生きてくる。
+
+\begin{bardefinition}
+  $X \in \TopVect$が局所凸位相ベクトル空間(locally convex topological vector space)であるとは、原点の基本近傍系として凸集合からなるものがとれることをいう。局所凸位相ベクトル空間と連続線形写像のなす圏を$\LCTopVect$と書く。空間のHausdorff性は仮定しない。
+\end{bardefinition}
+
+\begin{proposition}
+  $X \in \LCTopVect$とする。このとき$X$の原点の基本近傍系として開かつ吸収的かつ絶対凸な集合からなるものがある。
+\end{proposition}
+\begin{proof}
+  証明はMaria\cite{Maria-I}Proposition 4.1.12.を参照のこと。
+\end{proof}
+
+
+\begin{theorem}\label{theorem:lctvs}
+  $X \in \LCTopVect$とする。このとき、$X$の原点における基本近傍系$\mathcal{B}$であって、吸収的かつ絶対凸な集合からなるものであり、かつ次を満たすものがある。
+\begin{description}
+  \item[a)]$\forall U,V \in \B$, $\exists W \in \B$ s.t. $W \subset U \cap V$
+  \item[b)]$\forall U \in \B$, $\forall \rho > 0$, $\exists W \in \B$ s.t. $W \subset \rho U$
+\end{description}
+逆に、$X \in \Vect$と$X$の吸収的かつ絶対凸な部分集合の集まり$\B$であって、上記のa), b)を満たすものが与えられたとき、$X$の位相$\tau$であって、$\B$を原点の基本近傍系とし、$(X,\tau) \in \LCTopVect$なるものがただ一つある。
+\end{theorem}
+\begin{proof}
+Maria\cite{Maria-I}Theorem 4.1.14を参照のこと。
+\end{proof}
+
+\begin{bardefinition}
+  $\{ E_{\alpha} \}_{\alpha \in A}$を局所凸位相ベクトル空間の族とする。$E \in \Vect$と、線形写像の族$g_{\alpha} \colon E_{\alpha} \to E$の定める$E$の帰納的位相(inductive topology)とは、
+  \[
+  \B = \setmid{U \subset E}{E \text{は凸かつ均衡かつ吸収的で、} \forall \alpha \in A , g_{\alpha}^{-1} (U) \text{は} E_{\alpha} \text{の開集合} }
+  \]
+  なる$\B$を0の基本近傍系とするような位相である。
+\end{bardefinition}
+\begin{remark}
+  これが実際に位相となり、これにより$E$が局所凸位相ベクトル空間になるかどうかが問題になる。
+
+  それには、定理\ref{theorem:lctvs}の条件a)とb)を確かめればよいが、凸・吸収的・均衡という性質は有限個の共通部分をとる操作や、0でない定数倍により不変なので$\B$はこれを満たす。よって実際に局所凸位相ベクトル空間になる。
+\end{remark}
+
+
+\begin{proposition}\label{universality}
+  $\{ E_{\alpha} , \tau_{\alpha} \}_{\alpha \in A}$を局所凸位相ベクトル空間の族とする。添え字集合$A$は任意の集合である。あるベクトル空間$E$があり、すべての$\alpha \in A$について、$g_{\alpha} \colon E_{\alpha} \to E$なる線形写像があるとする。$E$に$\{ E_{\alpha}, g_{\alpha}\}$が誘導する帰納的位相をいれて、局所凸位相ベクトル空間とみなす。
+
+  このとき任意の$F \in \LCTopVect$と線形写像$u \colon E \to F$に対して
+  \[
+\forall \alpha \in A \quad u \circ g_{\alpha} \colon E_{\alpha} \to F \text{は連続} \Leftrightarrow u \colon E \to F \text{は連続}
+  \]
+  が成り立つ。
+\end{proposition}
+
+\begin{proof}
+  証明はMaria\cite{Maria-II}Proposition 1.3.1を参照のこと。(写像の線形性と局所凸空間のk基本近傍系の性質を使う)
+  %$u \colon E \to F$が連続ならば$\forall \alpha \in A \; u \circ g_{\alpha}$が連続であることはあきらか。逆を示そう。
+\end{proof}
+
+
+\begin{remark}
+この命題\ref{universality}により、帰納的位相を入れられた空間が本当に余極限の普遍性を満たすことがわかる。したがって、圏$\LCTopVect$は余完備であることが結論できる。
+\end{remark}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%
+\begin{comment}
+\section{狭義帰納的極限}
+
+
+\begin{bardefinition}
+  関手$F \colon A \to \LCTopVect$があるとする。$A$が有向集合であって、各射$g \colon a \to b$に対して射$Fg \colon Fa \to Fb$が像への同相写像であるとき、$F$の余極限$\varinjlim F$をstrict inductive limitと呼ぶ。またこのときの関手$F$をstrict inductive limit systemと呼ぶことにする。
+\end{bardefinition}
+
+\begin{proposition}
+  $\N$を大小関係により順序集合とみなす。関手$X \colon \N \to \LCTopVect$があり、strict inductive limit systemであるとする。各$X_n$がHausdorff空間であるとき、次が成り立つ。
+\begin{enumerate}
+  \item $\varinjlim X$もHausdorff空間である。
+  \item 各$n \in \N$について$X_n \subset X_{n+1}$が閉集合ならば、$X_n$の$\varinjlim X$における像も$\varinjlim X$の閉集合である。
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+Taylor\cite{Taylor}Proposition 2.11を参照のこと。
+\end{proof}
+
+\begin{proposition}\label{goal}
+  $X \colon \N \to \LCTopVect$がstrict inductive limit systemであり、各$n$について$X_n \subset X_{n+1}$は閉集合であるとする。このとき、点列$\{ x_i\}_{i \in \N} \subset \varinjlim X$について次は同値。
+\begin{enumerate}
+  \item  $\{ x_i \}$が収束列
+  \item $\{x_i \}\subset X_n$なる$n$が存在して$\{ x_i \}$は$X_n$の点に収束する
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+  Taylor\cite{Taylor}Proposition 2.12を参照のこと。
+\end{proof}
+
+\end{comment}
+                                                          %%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newpage
+\section{コンパクト台連続関数がなす空間について}
+
+\begin{bardefinition}
+$X \in \Top$と$X$のコンパクト部分集合$K$に対して、次のように$\Vect$の対象を定義する。
+\begin{align*}
+  \CX &= \setmid{f \colon X \to \C}{f \text{は連続}} \\
+  \CXK &= \setmid{f \in \CX }{\supp f \subset K} \\
+  \CCX &= \setmid{f \in \CX}{\supp f \text{はコンパクト}}
+\end{align*}
+\end{bardefinition}
+
+\begin{bardefinition}
+  $X \in \Top$と$K \subset X$に対して、$K$がコンパクトであるとき$K \Subset X$と書く。また$K \Subset X$なる$K$全体が包含に関してなす有向集合を$\KX$と書く。
+\end{bardefinition}
+
+\begin{remark}
+  集合$X$の位相が写像の族$p_{\alpha} \colon X \to X_{\alpha}$の(終位相でなく)始位相であったならば、$X$上の点列およびnetの収束の特徴付けを得る自然な方法がある。なぜならば、$X$上のnet $\{n_{\lambda}\}_{\lambda \in I}$がある$n \in X$に収束するということは、次のように特徴づけられるからである。
+
+  有向集合$I$に無限遠点$\infty$を付け加えた集合を$\widetilde{I}$とする。そして$\widetilde{I}$に次のような位相を入れる。
+  \[
+  U \subset \widetilde{I} \; \text{が開集合} \Leftrightarrow \infty \not\in U \text{または} \exists k \in I \; \text{s.t.} \; \setmid{j \in I}{k \leq j} \subset U
+  \]
+  そうして、$\widetilde{n} \colon \widetilde{I} \to X$を$\widetilde{n}(\infty)=n$、$\forall \lambda  \in I \; \widetilde{n}(\lambda)=n_{\lambda}$で定める。そうすると
+  \[
+\{n_{\lambda} \} \text{が} n \text{に収束する} \Leftrightarrow \widetilde{n} \; \text{が連続} \Leftrightarrow \forall \alpha \; p_{\alpha} \circ \widetilde{n} \; \text{が連続}
+  \]
+  が成り立つ。終位相のときには点列の収束を特徴づける自然な方法はないため、個別に考える必要がある。
+\end{remark}
+
+
+\begin{proposition}
+$X$はHausdorff空間、$K \Subset X$とする。このとき$\CXK$は一様ノルムに関してBanach空間となる。
+\end{proposition}
+\begin{proof}
+  内田\cite{内田}定理29.1により、$\mathcal{C}_F(X)=\setmid{f\in \CX}{\norm{f} < \infty}$はBanach空間である。$\CXK \subset \mathcal{C}_F(X)$が閉部分集合であると示せばよい。
+
+  $f_n \in \CXK$、$f \in \mathcal{C}_F(X)$であって、$f_n$は$f$に一様収束するものとする。このとき
+  \[
+  \{ f \neq 0\} \subset \varliminf \{ f_n \neq 0 \} \subset K
+  \]
+が成り立つ。$X$はHausdorff空間なので、$K \subset X$は閉集合である。したがって$\supp f \subset K$であり、$f \in \CXK$である。
+\end{proof}
+
+\begin{remark}
+  $X$が局所コンパクトHausdorff空間であるとする。このとき$\CCX$は一様ノルムに関してBanach空間になるとは限らない。
+\end{remark}
+
+\begin{proof}
+$X = \R$とする。$f_n, f \in \CX$を
+\begin{align*}
+  f_n(x) &= \max \left\{ 0 \, , \frac{1}{1+\abs{x}}-\frac{1}{n} \right\} \\
+  f(x) &= \frac{1}{1+\abs{x}}
+\end{align*}
+と定める。このときすべての$n$について$f_n \in \CCX$であり$f_n$は$f$に一様収束するが、$f$は$\CCX$の元ではない。
+\end{proof}
+
+\begin{remark}
+  $X$が局所コンパクトHausdorff空間であり、$\mu$が$X$のBorel集合の上のRadon測度であるとする。このとき$\CCX$に一様ノルムで位相を入れると、積分
+  \[
+\mapdisplay{I}{\CCX}{\C}{f}{\int_X f(x) \, d\mu}
+  \]
+は連続になるとは限らない。
+\end{remark}
+\begin{proof}
+  $X = \R$、$\mu$をLebesgue測度とする。このとき
+  \begin{align*}
+    f_n(x) &= \max \left\{ 0,  \frac{n - \abs{x}}{n^2}   \right\} \\
+    f(x) &= 0
+  \end{align*}
+とすると$f_n$は$f$に一様収束するが、$n$によらず$I(f_n)=1$なので$I$は連続でない。
+\end{proof}
+
+
+\begin{bardefinition}
+  $X \in \Top$とする。
+  \[
+  \CCX = \bigcup_{K \in \KX} \CXK
+  \]
+  なので、$\CCX$を関手$\mathcal{C}(X,\cdot) \colon \KX \to \LCTopVect$の余極限とみなして位相を定めることができる。これを、$\varinjlim \CXK$と書く。
+\end{bardefinition}
+
+\begin{remark}
+  各包含写像$\CXK \to \limCXK$は像への同相写像。言い換えれば、$\CXK \subset \limCXK$とみなした相対位相ともとの位相は一致することがわかる。
+\end{remark}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{comment}
+\begin{proposition}
+  $X$が局所コンパクトHausdorff空間であり、$X = \bigcup_{n \in \N} K_n$かつ$K_n \subset \Int K_{n+1}$が成り立つようなコンパクト部分集合の列$K_n$(取り尽くし列)があるとする。このとき次が成り立つ。
+  \begin{enumerate}
+    \item  関手$\mathcal{C}(X, K_n) \colon \N \to \LCTopVect$はstrict inductive limit systemであって、命題\ref{goal}の仮定を満たす。
+    \item $\CCX$に$\varinjlim \mathcal{C}(X,K_n)$として位相を定義できる
+    \item 上記の$\CCX$の位相は取り尽くし列に依らない。
+  \end{enumerate}
+\end{proposition}
+
+\end{comment}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+\section{結論}
+$\CCX$の位相は$\limCXK$として位相をいれるのがおそらく正しい。「広義一様収束の位相に関して」という文には矛盾しているが、その部分は誤りだと考えられる。広義一様収束は一様収束より弱いはずなのに「$\supp F_n$が一様に抑えられる」のはおかしいからだ。
+
+このように位相を入れた場合、あきらかに次が成り立ってくれる。
+\begin{proposition}
+$Y \in \LCTopVect$と線形写像$I \colon \CCX \to Y$があるとする。このとき次は同値。
+\begin{enumerate}
+  \item $I$が連続
+  \item すべての包含写像$i_K \colon \CXK \to \CCX$と$I$との合成が連続
+  \item すべての$K$について、$F_n \to F$ in $\CXK$が成り立つならば$I(F_n) \to I(F)$が成り立つ。
+\end{enumerate}
+これではじめの記述が正しくなるように位相を入れることができた。
+\end{proposition}
+
+\newpage
+\section{おまけ}
+
+\begin{bardefinition}
+  $V \in \Vect$のfinite topologyとは、$V$の有限次元部分空間$W$のEuclidean topologyから誘導されるweak topologyである。すなわち、
+  $U \subset V$が開集合であるとは、任意の有限次元部分空間$W$について$U \cap W \subset W$が開集合であることである。
+\end{bardefinition}
+
+\begin{remark}\label{counterex}
+finite topologyが入った$\C$ベクトル空間は位相ベクトル空間であるとは限らない。実際、あるベクトル空間が濃度が$\geq 2^{\aleph_0}$であるような基底を持つならば、finite topologyによってこのベクトル空間は位相ベクトル空間にならない。
+\end{remark}
+\begin{proof}
+  以下の証明はDugundji\cite{Dugundji}Appendix One 4.3に依る。
+
+$L$を基底$\mathscr{B}$を持つベクトル空間とし、$\mathscr{B}$の濃度は$2^{\aleph_0}$以上であるとする。そして$L$にはfinite topologyが入っているものとする。$\{u_n \}_{n \in \N}$を基底からとったベクトルの集合で、互いに相異なるものとする。また$\mathscr{M}$を写像$f \colon \N \to \N$の全体とする。各$f \in \mathscr{M}$に対して
+$\{ u_f \} \in \mathscr{B}  \setminus \{ u_n \}_{n \in \N}$を相異なるようにとる。
+$\{ u_f \}$の濃度は$2^{\aleph_0}$であり、$\{u_n\}$の濃度は$\aleph_0$なので、このような$\mathscr{B}$の部分集合は確かにある。
+
+  それぞれの$n$と$f$に対して
+  \[
+  a_{n,f}= \frac{1}{f(n)} u_n + \frac{1}{f(n)} u_f
+  \]
+  と定義する。あきらかに$a_{n,f} \neq 0$である。ここで
+  \[
+  A = \setmid{a_{n,f}}{(n,f) \in \N \times \mathscr{M}}
+  \]
+  とおく。このとき$A \subset L$は閉集合である。なぜならば。$L$の有限次元部分空間$S$をとろう。すると$A \cap S$は有限集合である。(ここで$\mathscr{B}$の濃度が$2^{\aleph_0}$以上であることを用いている。もし$\mathscr{B}$の濃度が$\aleph_0$以下なら、$a_{n,f}$は$f$に関して非常に重複するので、$A \cap S$は有限とは限らない) $S$はHausdorff空間だから、$A \cap S \subset S$は閉。よって$A \subset L$も閉であると判る。
+
+  したがって$U = A^c$は$0 \in L$の開近傍である。$L$の加法が$0$において連続でないことを示すために、$W + W \subset U$なる$0$の近傍$W$が存在しないことを示そう。いま$W$を$0$の近傍とする。$\mathscr{B}=\{ u_{\beta}\}_{\beta \in B}$とする。するとそれぞれの$u_{\beta} \in \mathscr{B}$に対して
+  \[
+  0 \leq \lambda < \lambda_{\beta} \to \lambda u_{\beta} \in W
+  \]
+となるような$\lambda_{\beta} > 0$が存在する。(スカラー倍$\C \times \langle u_{\beta} \rangle \to \langle u_{\beta} \rangle$の連続性より)ここで$\varphi \colon \N \to \N$を、$\varphi(n)$が$ \max\{ n, 1/ \lambda_{n} \} + 1 $以上の最小の整数となるように定める。
+このとき常に
+\[
+\frac{1}{\varphi(n)}u_n \in W
+\]
+であり、ある$n$が存在して
+\[
+\frac{1}{\varphi(n)}u_{\varphi} \in W
+\]
+となるかどうかが問題になる。そのような$n$が存在することが示せれば終わりである。$\varphi \in \mathscr{M}$なので、ある$\lambda_{\varphi} > 0$がある。$\varphi$は非有界なので、このとき$\varphi(\overline{n}) > 1/ \lambda_{\varphi}$なる$\overline{n}$がある。よって示せた。
+\end{proof}
+
+\begin{remark}
+  以上の例\ref{counterex}により判ることは、$\LCTopVect$における余極限は、$\Vect$における余極限に$\Top$における余極限として位相を入れたものとは異なるということである。
+\end{remark}
+
+
+
+\newpage
+\begin{thebibliography}{1}%参考文献のリスト
+  \bibitem{小林大島} 小林俊之・大島利夫『リー群と表現論』(岩波書店, 2005)
+  \bibitem{内田} 内田伏一『集合と位相』(裳華房, 1986)
+  \bibitem{宮島} 宮島静雄『関数解析』(横浜図書, 2005)
+  \bibitem{Maria-I} Maria Infusino『Topological Vector Spaces』(University of Konstanz, Summer Semester 2017)
+  \bibitem{Maria-II} Maria Infusino『Topological Vector Spaces II』
+ (University of Konstanz, Winter Semester 2017-2018)
+ \bibitem{Taylor}J.L.Taylor『Notes on Locally Convex Topological Vector Spaces』(Department of Mathematics University of Utah, July 1995)
+\bibitem{Dugundji}James Dugundji『Topology』(Allyn and Bacon Inc, 1966)
+\end{thebibliography}
+
+
+
+
+\end{document}
